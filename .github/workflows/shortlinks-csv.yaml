@@ -2,7 +2,6 @@ name: Export post frontmatter to CSV
 
 on:
   push:
-    branches: [master]
   workflow_dispatch:
 
 jobs:
