@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""Concatenate YAML frontmatter from all Jekyll posts into one CSV table."""
+
+import csv
+import re
+import sys
+from pathlib import Path
+
+import frontmatter
+
+POST_GLOBS = ["_posts/*.md", "21/_posts/*.md"]
+OUTPUT_PATH = "shortlinks.csv"
+
+SLUG_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-(.+)\.md$")
+
+
+def slug_key(path: Path) -> str:
+    match = SLUG_RE.match(path.name)
+    if not match:
+        raise ValueError(f"filename does not match YYYY-MM-DD-<key>.md: {path}")
+    return match.group(1)
+
+
+def main() -> None:
+    repo_root = Path(__file__).resolve().parent.parent
+    paths = sorted(
+        p for pattern in POST_GLOBS for p in repo_root.glob(pattern)
+    )
+
+    rows = []
+    all_keys: set[str] = set()
+    for path in paths:
+        post = frontmatter.load(path)
+        row = {
+            "file": str(path.relative_to(repo_root)),
+            "key": slug_key(path),
+            **post.metadata,
+        }
+        all_keys.update(post.metadata.keys())
+        rows.append(row)
+
+    fieldnames = ["file", "key"] + sorted(all_keys)
+    rows.sort(key=lambda r: r["file"])
+
+    with open(repo_root / OUTPUT_PATH, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    print(f"wrote {len(rows)} rows to {OUTPUT_PATH}", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()
