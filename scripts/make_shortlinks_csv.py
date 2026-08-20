@@ -8,7 +8,7 @@ from pathlib import Path
 
 import frontmatter
 
-POST_GLOBS = ["_posts/*.md", "21/_posts/*.md"]
+POST_GLOB = "**/_posts/*.md"
 OUTPUT_PATH = "shortlinks.csv"
 
 SLUG_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-(.+)\.md$")
@@ -23,9 +23,7 @@ def slug_key(path: Path) -> str:
 
 def main() -> None:
     repo_root = Path(__file__).resolve().parent.parent
-    paths = sorted(
-        p for pattern in POST_GLOBS for p in repo_root.glob(pattern)
-    )
+    paths = sorted(repo_root.glob(POST_GLOB))
 
     rows = []
     all_keys: set[str] = set()
