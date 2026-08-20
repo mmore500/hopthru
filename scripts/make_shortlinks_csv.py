@@ -25,18 +25,16 @@ def main() -> None:
     repo_root = Path(__file__).resolve().parent.parent
     paths = sorted(repo_root.glob(POST_GLOB))
 
-    rows = []
-    all_keys: set[str] = set()
-    for path in paths:
-        post = frontmatter.load(path)
-        row = {
+    rows = [
+        {
             "file": str(path.relative_to(repo_root)),
             "shortlink_key": slug_key(path),
-            **post.metadata,
+            **frontmatter.load(path).metadata,
         }
-        all_keys.update(post.metadata.keys())
-        rows.append(row)
+        for path in paths
+    ]
 
+    all_keys = {key for row in rows for key in row if key not in ("file", "shortlink_key")}
     fieldnames = ["file", "shortlink_key"] + sorted(all_keys)
     rows.sort(key=lambda r: r["file"])
 
