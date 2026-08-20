@@ -34,8 +34,8 @@ def main() -> None:
         for path in paths
     ]
 
-    all_keys = {key for row in rows for key in row if key not in ("file", "shortlink_key")}
-    fieldnames = ["file", "shortlink_key"] + sorted(all_keys)
+    all_keys = {key for row in rows for key in row}
+    fieldnames = sorted(all_keys)
     rows.sort(key=lambda r: r["file"])
 
     with open(repo_root / OUTPUT_PATH, "w", newline="") as f:
