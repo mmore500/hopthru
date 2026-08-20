@@ -31,13 +31,13 @@ def main() -> None:
         post = frontmatter.load(path)
         row = {
             "file": str(path.relative_to(repo_root)),
-            "shortlinks_key": slug_key(path),
+            "shortlink_key": slug_key(path),
             **post.metadata,
         }
         all_keys.update(post.metadata.keys())
         rows.append(row)
 
-    fieldnames = ["file", "shortlinks_key"] + sorted(all_keys)
+    fieldnames = ["file", "shortlink_key"] + sorted(all_keys)
     rows.sort(key=lambda r: r["file"])
 
     with open(repo_root / OUTPUT_PATH, "w", newline="") as f:
