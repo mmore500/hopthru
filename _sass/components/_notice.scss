@@ -1,0 +1,19 @@
+/* ==========================================================================
+   Notice
+   ========================================================================== */
+
+.c-notice {
+    margin-bottom: 2.5rem; // 25px
+    padding: 1.5rem; // 15px
+    background-color: $c-base__2;
+    border-radius: 4px;
+
+    p {
+        @include fs--caption;
+        color: $c-base__02;
+    }
+
+    a {
+        color: $c-accent__blue;
+    }
+}
